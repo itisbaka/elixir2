@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "773521326163",
+    "project_id": "elixir2-28343",
+    "storage_bucket": "elixir2-28343.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773521326163:android:1aa3185b472adb1f73c6a6",
+        "android_client_info": {
+          "package_name": "com.Foodwaste.elixir2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773521326163-mkrgbj2bs45dsvs9fantqfonil6uvb5g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfvw6sVyw9VSlASyLP1e1tMfjntSObDWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773521326163-mkrgbj2bs45dsvs9fantqfonil6uvb5g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

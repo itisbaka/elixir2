@@ -1,0 +1,2 @@
+public class elixir2 {
+}
