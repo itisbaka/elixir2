@@ -1,5 +1,5 @@
 import 'package:elixir2/pages/Onboarding_page.dart';
-import 'package:elixir2/pages/login_page.dart';
+import 'package:elixir2/pages/Login/login_home.dart';
 import 'package:elixir2/pages/register/register_home.dart';
 import 'package:elixir2/themebutton.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +86,6 @@ class _WelcomePageState extends State<WelcomePage> {
   );
 
   void goToLogin(context) => Navigator.of(context).pushReplacement(
-    MaterialPageRoute(builder: (_) => const LoginPage()),
+    MaterialPageRoute(builder: (_) => const LoginHome()),
   );
 }

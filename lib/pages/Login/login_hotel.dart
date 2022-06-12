@@ -1,18 +1,20 @@
+import 'package:elixir2/pages/Hotel/hotel_home_screen.dart';
 import 'package:elixir2/pages/Onboarding_page.dart';
+import 'package:elixir2/pages/Foodie/home_screen.dart';
 import 'package:elixir2/pages/register/register_home.dart';
 import 'package:elixir2/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-class LoginPage extends StatefulWidget{
+class LoginHotel extends StatefulWidget{
 
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginHotel({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginHotel> createState() => _LoginHotelState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginHotelState extends State<LoginHotel> {
   // form key
   final _formKey = GlobalKey<FormState>();
 
@@ -23,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // firebase
   final _auth = FirebaseAuth.instance;
+
 
   // string for displaying the error Message
   String? errorMessage;
@@ -105,31 +108,31 @@ class _LoginPageState extends State<LoginPage> {
                 fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
           )),
     );
-  return Scaffold(
-    resizeToAvoidBottomInset: false,
-    backgroundColor: Colors.transparent,
-    appBar: AppBar(
-      backgroundColor: Colors.cyan.shade700,
-      leading:
-      IconButton( onPressed: (){
-        goToWelcomePage(context);
-      },icon:const Icon(Icons.arrow_back_ios,size: 20,color: Colors.black,)),
-    ),
-    body: Container(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.cyan.shade700,
+        leading:
+        IconButton( onPressed: (){
+          goToWelcomePage(context);
+        },icon:const Icon(Icons.arrow_back_ios,size: 20,color: Colors.black,)),
+      ),
+      body: Container(
 
-    decoration: BoxDecoration(
-    image: DecorationImage(
-    image: const AssetImage("assets/Background.jpg"),
-    fit: BoxFit.cover,
-    colorFilter: ColorFilter.mode(
-    Colors.black.withOpacity(0.5),
-    BlendMode.darken,
-    )
-    ),
-    ),
-    child: Column(
-    children: [
-    /*Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: const AssetImage("assets/Background.jpg"),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5),
+                BlendMode.darken,
+              )
+          ),
+        ),
+        child: Column(
+          children: [
+            /*Container(
     height: 160,
 
     decoration: const BoxDecoration(
@@ -145,61 +148,61 @@ class _LoginPageState extends State<LoginPage> {
     color: Colors.transparent,
     ),
     ),*/
- Container(
+            Container(
 
-    child: Padding(
-    padding: const EdgeInsets.all(36.0),
-    child: Form(
-    key: _formKey,
-    child: Column(
+              child: Padding(
+                  padding: const EdgeInsets.all(36.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
 
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
 
-    children: <Widget>[
-      const SizedBox(height: 45),
-    SizedBox(
-    height:160,
-    child: Image.asset(
-    "assets/ELIXIR_logo.png",
-    fit: BoxFit.contain
-    )),
-    const Text ("Login", style: TextStyle(
-        fontSize: 35,
-        fontWeight: FontWeight.bold,color: Colors.white,
-      ),),
-    emailField,
-    const SizedBox(height: 25),
-    passwordField,
-    const SizedBox(height: 35),
-    loginButton,
-    const SizedBox(height: 15),
-    Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[
-    const Text("Don't have an account? "),
-    GestureDetector(
-    onTap: () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) =>
-    const RegisterHome()));//Registerscreenn
-    },
-    child: const Text(
-    "SignUp",
-    style: TextStyle(
-    color: Colors.pink,
-    fontWeight: FontWeight.bold,
-    fontSize: 15),
-    ),
-    )
-    ])
-    ],
-    ),
- )
-    ),),],),
-    ),);
+                      children: <Widget>[
+                        const SizedBox(height: 45),
+                        SizedBox(
+                            height:160,
+                            child: Image.asset(
+                                "assets/ELIXIR_logo.png",
+                                fit: BoxFit.contain
+                            )),
+                        const Text ("Login", style: TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,color: Colors.white,
+                        ),),
+                        emailField,
+                        const SizedBox(height: 25),
+                        passwordField,
+                        const SizedBox(height: 35),
+                        loginButton,
+                        const SizedBox(height: 15),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              const Text("Don't have an account? "),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                          const RegisterHome()));//Registerscreenn
+                                },
+                                child: const Text(
+                                  "SignUp",
+                                  style: TextStyle(
+                                      color: Colors.pink,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
+                              )
+                            ])
+                      ],
+                    ),
+                  )
+              ),),],),
+      ),);
   }
 
   void signIn(String email, String password) async {
@@ -209,8 +212,9 @@ class _LoginPageState extends State<LoginPage> {
             .signInWithEmailAndPassword(email: email, password: password)
             .then((uid) => {
           Fluttertoast.showToast(msg: "Login Successful"),
+
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const OnBoardingPage())),//homescreen
+              MaterialPageRoute(builder: (context) => const HotelHomeScreen())),//homescreen
         });
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
