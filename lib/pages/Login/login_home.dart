@@ -1,5 +1,4 @@
 import 'package:elixir2/pages/Login/login_hotel.dart';
-import 'package:elixir2/pages/Login/login_page.dart';
 import 'package:elixir2/pages/Login/login_volunteer.dart';
 import 'package:flutter/material.dart';
 
@@ -83,15 +82,6 @@ class InitState extends State<LoginHome> {
                 goToRegisterVolunteer(context);
               },
             ),
-            const SizedBox(height: 40),
-            ThemeButton(
-              label: 'Foodies',
-              highlight: Colors.green[900],
-              color: Colors.pink,
-              onClick: () {
-                goToRegisterFoodie(context);
-              },
-            ),
           ],
         ),
       ),
@@ -100,9 +90,7 @@ class InitState extends State<LoginHome> {
   void goToRegisterHotel(context) => Navigator.of(context).pushReplacement(
     MaterialPageRoute(builder: (_) => const LoginHotel()),
   );
-  void goToRegisterFoodie(context) => Navigator.of(context).pushReplacement(
-    MaterialPageRoute(builder: (_) => const LoginPage()),
-  );
+
   void goToRegisterVolunteer(context) => Navigator.of(context).pushReplacement(
     MaterialPageRoute(builder: (_) => const LoginVolunteer()),
   );

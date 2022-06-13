@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elixir2/pages/Login/login_home.dart';
 import 'package:elixir2/pages/UserModels/Volunteer_user_model.dart';
-import 'package:elixir2/pages/UserModels/user_model.dart';
-import 'package:elixir2/pages/UserModels/hotel_user_model.dart';
-import 'package:elixir2/pages/Login/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +24,7 @@ class _VolunteerHomeScreenState extends State<VolunteerHomeScreen> {
         .doc(user!.uid)
         .get()
         .then((value) {
-      this.loggedInUser = VolunteerUserModel.fromMap(value.data());
+      loggedInUser = VolunteerUserModel.fromMap(value.data());
       setState(() {});
     });
   }

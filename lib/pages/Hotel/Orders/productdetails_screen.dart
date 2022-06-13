@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_count_down/date_count_down.dart';
-import 'editproduct_screen.dart';
-import 'package:elixir2/pages/Hotel/hotel_home_screen.dart';
-//import 'package:donationapp/screens/youracceptance.dart';
+import 'package:elixir2/pages/Hotel/Orders/youracceptance.dart';
+import 'package:elixir2/pages/Hotel/Orders/product_model.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +17,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+
+import 'editproduct_screen.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final String productImage;
@@ -87,7 +89,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     setState(() {
       isLoading == true;
     });
-    await FirebaseFirestore.instance.collection("Hotel_users").doc(widget.userId).collection('PRODUCTS').doc(widget.productId).set({
+    await FirebaseFirestore.instance.collection("Users").doc(widget.userId).collection('PRODUCTS').doc(widget.productId).set({
       "acceptedUser": userdoc,
       "acceptedUserName": widget.donatedUserName,
       "userId": widget.userId,
@@ -121,7 +123,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       "isAccepted": "True",
       "isCompleted": "False",
     });
-    await FirebaseFirestore.instance.collection("Hotel_users").doc(widget.userId).collection('DONATEDPRODUCTS').doc(widget.productId).set({
+    await FirebaseFirestore.instance.collection("Users").doc(widget.userId).collection('DONATEDPRODUCTS').doc(widget.productId).set({
       "userId": widget.userId,
       "acceptedUserName": widget.donatedUserName,
       "acceptedUserEmail": widget.donatedUserEmail,
@@ -141,7 +143,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       "isCompleted": "False",
     });
 
-    await FirebaseFirestore.instance.collection("Hotel_users").doc(userdoc).collection('ACCEPTEDPRODUCTS').doc(widget.productId).set({
+    await FirebaseFirestore.instance.collection("Users").doc(userdoc).collection('ACCEPTEDPRODUCTS').doc(widget.productId).set({
       "donerUserId": widget.userId,
       "acceptedUserName": widget.donatedUserName,
       "userId": userdoc,
@@ -162,7 +164,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         setState(() {
           isLoading = false;
         });
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HotelHomeScreen()), (route) => false); //YourAcceptanceScreen()
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const YourAcceptanceScreen()), (route) => false);
       });
     });
   }

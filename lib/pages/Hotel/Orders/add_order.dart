@@ -1,24 +1,27 @@
 import 'dart:io' as io;
 import 'dart:async';
 
-import 'package:elixir2/pages/Hotel/place/place_result.dart';
-import 'package:elixir2/pages/Hotel/place/flutter_google_places.dart';
-import 'package:elixir2/pages/Hotel/place/place_search.dart';
+
+
+import 'package:elixir2/pages/Hotel/Orders/yourdonation_screen.dart';
+import 'package:elixir2/pages/Hotel/hotel_home_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:flutter/material.dart';
+
 import 'package:google_maps_webservice/places.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
-
-import 'package:elixir2/pages/Hotel/place//s_provider.dart';
-
-import 'package:elixir2/pages/Hotel/image_helper.dart';
-import  'package:elixir2/pages/Hotel/hotel_home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
+
+import '../image_helper.dart';
+import '../place/place_result.dart';
+import '../place/place_search.dart';
+import '../place/s_provider.dart';
 
 class AddProductScreen extends StatefulWidget {
   final double latitude;
@@ -65,7 +68,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     String userdoc = user!.uid;
 
     FirebaseFirestore.instance
-        .collection("Hotel_users")
+        .collection("Users")
         .doc(userdoc)
         .snapshots()
         .listen((event) {
@@ -117,7 +120,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         "longitude": longitude,
       });
       await FirebaseFirestore.instance
-          .collection("Hotel_users")
+          .collection("Users")
           .doc(userdoc)
           .collection('PRODUCTS')
           .doc(productId)
@@ -147,7 +150,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         });
       });
     } else {
-      await FirebaseFirestore.instance.collection("Hotel_Users").doc(userdoc).set({
+      await FirebaseFirestore.instance.collection("Users").doc(userdoc).set({
         "productId": productId,
         "userId": userdoc,
         "itemName": _itemNameController.text.trim(),
@@ -220,22 +223,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        backgroundColor: Color.fromRGBO(
-            7, 170, 186, 0.8549019607843137),
+        backgroundColor: Color.fromRGBO(7, 170, 186, 0.8549019607843137),
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text(
@@ -250,8 +246,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             child: Column(
               children: [
                 Container(
-                  color:Color.fromRGBO(
-                      7, 170, 186, 0.8549019607843137),
+                  color: const Color.fromRGBO(7, 170, 186, 0.8549019607843137),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(0, 30, 0, 30),
                     child: Center(
@@ -327,11 +322,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                       EdgeInsets.only(right: width * 0.01),
                                       width: width * 0.1,
                                       decoration: const BoxDecoration(
+                                          color: Color.fromRGBO(
+                                              7, 170, 186, 0.8549019607843137),
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(5),
-                                              bottomLeft: Radius.circular(5)),
-                                          color: Color.fromRGBO(
-                                              7, 170, 186, 0.8549019607843137)),
+                                              bottomLeft: Radius.circular(5))),
                                       child: const Icon(
                                         Icons.food_bank,
                                         color: Colors.white,
@@ -719,6 +714,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   ),
                                 ),
                               ),
+
                             ),
                             Container(
                               decoration: const BoxDecoration(
@@ -790,13 +786,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         ),
                       ),
                       SizedBox(height: width * 0.08),
-                      SizedBox(
+                     SizedBox(
                         height: width * 0.12,
                         width: width,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Color.fromRGBO(
-                                7, 170, 186, 0.8549019607843137), // background
+                            primary: const Color.fromRGBO(
+                                203, 28, 122, 1.0), // background
                             onPrimary: Colors.white,
                             minimumSize: Size(width, height * 0.06),
                             maximumSize: Size(width, height * 0.06),
@@ -823,8 +819,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             } else {
                               DateTime now = DateTime.now();
                               String g = ('${now.year}${now.month}${now.day}');
-                              String formattedDate = DateFormat('kkmmss')
-                                  .format(now);
+                              String formattedDate = DateFormat('kkmmss').format(now);
                               String productId = g + formattedDate;
                               setState(() {
                                 isLoading = true;
@@ -833,7 +828,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             }
 
                             // Navigator.of(context).push(MaterialPageRoute(
-                            //     builder: (context) => const HomeScreen()));
+                              //   builder: (context) => const YourDonationScreen()));
                           },
                           child: isLoading == true
                               ? const CircularProgressIndicator(
@@ -848,7 +843,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         ),
                       ),
                       SizedBox(height: width * 0.08),
-                      /*StreamBuilder(
+                      StreamBuilder(
                           stream: _getCount(),
                           builder:
                               (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -863,7 +858,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     primary: const Color.fromRGBO(
-                                        5, 25, 55, 1), // background
+                                        203, 28, 122, 1.0), // background
                                     onPrimary: Colors.white,
                                     minimumSize: Size(width, height * 0.06),
                                     maximumSize: Size(width, height * 0.06),
@@ -895,7 +890,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                       });
                                     }
                                      Navigator.of(context).push(MaterialPageRoute(
-                                         builder: (context) => const HomeScreen()));
+                                        builder: (context) => const HotelHomeScreen()));
                                   },
                                   child: isLoading == true
                                       ? const CircularProgressIndicator(
@@ -915,7 +910,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 color: Colors.white,
                               ),
                             );
-                          }),*/
+                          }),
                     ],
                   ),
                 ),

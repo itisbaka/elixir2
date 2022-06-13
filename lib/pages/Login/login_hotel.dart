@@ -1,6 +1,5 @@
 import 'package:elixir2/pages/Hotel/hotel_home_screen.dart';
 import 'package:elixir2/pages/Onboarding_page.dart';
-import 'package:elixir2/pages/Foodie/home_screen.dart';
 import 'package:elixir2/pages/register/register_home.dart';
 import 'package:elixir2/pages/welcome_page.dart';
 import 'package:flutter/material.dart';

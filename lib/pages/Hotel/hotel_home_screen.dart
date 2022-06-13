@@ -1,34 +1,32 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_count_down/date_count_down.dart';
-import 'package:elixir2/pages/Hotel/Orders/add_order.dart';
 import 'package:elixir2/pages/Hotel/place/auth_provider.dart';
-//import 'package:donationapp/screens/editprofile_screen.dart';
-//import 'package:donationapp/screens/productdetails_screen.dart';
 import 'package:elixir2/pages/Login/login_home.dart';
-import 'package:elixir2/pages/UserModels/hotel_user_model.dart';
-
+import 'package:elixir2/pages/Hotel/Orders/product_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'Orders/add_order.dart';
 import 'Orders/productdetails_screen.dart';
+import 'Orders/youracceptance.dart';
+import 'Orders/yourdonation_screen.dart';
+import 'editprofile_screen.dart';
 
 class HotelHomeScreen extends StatefulWidget {
   const HotelHomeScreen({Key? key}) : super(key: key);
 
   @override
-  _HotelHomeScreenState createState() => _HotelHomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HotelHomeScreenState extends State<HotelHomeScreen> {
-  User? user = FirebaseAuth.instance.currentUser;
-  HotelUserModel loggedInUser = HotelUserModel();
+class _HomeScreenState extends State<HotelHomeScreen> {
   Position _currentPosition = Position(latitude: 0.0, longitude: 0.0);
   late String _currentAddress = "";
   late String _currentAddress1 = "";
@@ -36,7 +34,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
   _getCurrentLocation() {
-    geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation).then((Position position) {
+    geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best).then((Position position) {
       setState(() {
         _currentPosition = position;
       });
@@ -62,14 +60,10 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance.collection("Hotel_user").doc(user!.uid).get().then((value){
-      this.loggedInUser=HotelUserModel.fromMap(value.data());
-      setState((){});
-    });
     _getDetails();
     _getProductFirst();
     _getCurrentLocation();
-    print("Init: $uid");
+    print("Init: $userId");
   }
 
   String name = "";
@@ -77,7 +71,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
   String image = "";
   String location = "";
   String profileUrl = "";
-  String uid = "";
+  String userId = "";
 
   static Stream<QuerySnapshot> _getProduct() {
     final _mainCollection = FirebaseFirestore.instance.collection('PRODUCTS').where("isAvailable", isEqualTo: "True");
@@ -96,16 +90,16 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
     User? user = _firebaseAuth.currentUser;
     String userdoc = user!.uid;
 
-    FirebaseFirestore.instance.collection("Hotel_users").doc(userdoc).snapshots().listen((event) {
+    FirebaseFirestore.instance.collection("Users").doc(userdoc).snapshots().listen((event) {
       setState(() {
-        uid = event.id;
-        name = event.get("${loggedInUser.hotelName}").toString();
+        userId = event.id;
+        name = event.get("name").toString();
 
-        email = event.get("${loggedInUser.email}").toString();
+        email = event.get("email").toString();
         image = event.get("profileUrl").toString();
         location = event.get("country").toString();
 
-        print("uid: ${loggedInUser.uid}");
+        print("UserId: $userId");
       });
     });
   }
@@ -117,17 +111,17 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
     await documentReferencer.delete().whenComplete(() => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Package is deleted.')))).catchError((e) => print(e));
   }
 
-// StreamController<List<Product>> _streamController = StreamController<List<Product>>();
-// Stream<List<Product>> get _stream => _streamController.stream;
-// _filter(String searchQuery) {
-//    final _mainCollection = FirebaseFirestore.instance
-//         .collection('PRODUCTS').snapshots().toList();
-//   List<Product> _filteredList = FirebaseFirestore.instance
-//         .collection('PRODUCTS')
-//       .where((Product product) => product.name.toLowerCase().contains(searchQuery.toLowerCase())).get()
-//       .toList();
-//   _streamController.sink.add(_filteredList);
-// }
+/*StreamController<List<Product>> _streamController = StreamController<List<Product>>();
+ Stream<List<Product>> get _stream => _streamController.stream;
+ _filter(String searchQuery) {
+    final _mainCollection = FirebaseFirestore.instance
+         .collection('PRODUCTS').snapshots().toList();
+   List<Product> _filteredList = FirebaseFirestore.instance
+         .collection('PRODUCTS')
+       .where((Product product) => product.name.toLowerCase().contains(searchQuery.toLowerCase())).get()
+       .toList();
+   _streamController.sink.add(_filteredList);
+ }*/
 
 // final List<Product> _dataFromQuerySnapShot = <Product>[
 //   // every user has same enviornment because you are applying
@@ -145,12 +139,12 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    Color blue = Colors.cyan.shade700;
+    Color blue = const Color.fromRGBO(7, 170, 186, 0.8549019607843137);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.cyan.shade700,
+            backgroundColor: blue,
             foregroundColor: Colors.white,
             elevation: 0,
             centerTitle: false,
@@ -165,7 +159,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
                   ),
                 ),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const HotelHomeScreen()));//YourNotifationScreen()
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const HotelHomeScreen()));
                 },
               )
             ],
@@ -180,29 +174,8 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
                 Text(_currentAddress, style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: width * 0.04, color: Colors.white)),
               ],
             ),
-            bottom: PreferredSize(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.04, vertical: width * 0.02),
-                  child: Container(
-                    child: TextFormField(
-                      controller: _searchController,
-                      onChanged: (a) {
-                        setState(() {});
-                      },
-                      decoration: InputDecoration(
-                          hintText: "Search Product",
-                          suffixIcon: Icon(Icons.search),
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: Colors.white)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: Colors.white)),
-                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(5), borderSide: const BorderSide(color: Colors.white))),
-                    ),
-                  ),
-                ),
-                preferredSize: Size.fromHeight(height * 0.09)),
           ),
-          drawer: CustomDrawer(name: '${loggedInUser.hotelName}', email: '${loggedInUser.email}', image: image),
+          drawer: CustomDrawer(name: name, email: email, image: image),
           body: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: width * 0.04),
@@ -250,7 +223,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
                                 itemBuilder: (context, index) {
                                   String docId = snapshot.data!.docs[index].id;
                                   String itemName = snapshot.data!.docs[index]['itemName'];
-                                  String userId1 = snapshot.data!.docs[index]['uid'];
+                                  String userId1 = snapshot.data!.docs[index]['userId'];
                                   String categories = snapshot.data!.docs[index]['categories'];
                                   String desc = snapshot.data!.docs[index]['description'];
                                   String mobileNumber = snapshot.data!.docs[index]['mobileNumber'];
@@ -344,7 +317,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
                                                                 builder: (context) => ProductDetailsScreen(
                                                                       latitude: productLatitude,
                                                                       longitude: productLongitude,
-                                                                      myFood: uid == userId1 ? true : false,
+                                                                      myFood: userId == userId1 ? true : false,
                                                                       donatedUserName: name,
                                                                       userId: userId1,
                                                                       donatedUserCountry: location,
@@ -379,15 +352,14 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
                         }),
                   ),
                   SizedBox(height: width * 0.04),
-                  Container(
+                /*  Container(
                     width: width,
                     child: StreamBuilder<QuerySnapshot>(
                         stream: _getProduct().asBroadcastStream(),
                         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (snapshot.hasError) {
                             return Text('Something went wrong');
-                          } else if (snapshot.hasData && snapshot.data != null && snapshot.data!.docs.where((
-                              element) => element['itemName'].toString().toLowerCase().contains(_searchController.text.toLowerCase())).isEmpty) {
+                          } else if (snapshot.hasData && snapshot.data != null && snapshot.data!.docs.where((QueryDocumentSnapshot element) => element['itemName'].toString().toLowerCase().contains(_searchController.text.toLowerCase())).isEmpty) {
                             return Container(width: double.infinity, padding: EdgeInsets.only(top: 16), child: Center(child: Text('No product found', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))));
                           } else if (snapshot.hasData && snapshot.data != null && snapshot.data!.size > 0) {
                             return GridView(
@@ -395,7 +367,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
                               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(childAspectRatio: 3 / 3.5, crossAxisCount: 2),
                               physics: NeverScrollableScrollPhysics(),
                               children: [
-                                ...snapshot.data!.docs.where((element) => element['itemName'].toString().toLowerCase().contains(_searchController.text.toLowerCase())).map((data) {
+                                ...snapshot.data!.docs.where((QueryDocumentSnapshot element) => element['itemName'].toString().toLowerCase().contains(_searchController.text.toLowerCase())).map((QueryDocumentSnapshot data) {
                                   final String itemName = data.get("itemName");
                                   String docId = data.get("productId");
                                   String userId1 = data.get("userId");
@@ -413,10 +385,10 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
 
                                   return GestureDetector(
                                     onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (context) => ProductDetailsScreen(  //ProductDetailScreen
+                                        builder: (context) => ProductDetailsScreen(
                                           latitude: productLatitude,
                                           longitude: productLongitude,
-                                          myFood: uid == userId1 ? true : false,
+                                          myFood: userId == userId1 ? true : false,
                                           donatedUserName: name,
                                           userId: userId1,
                                           donatedUserCountry: location,
@@ -432,7 +404,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
                                           productName: itemName,
                                           time: disAppearTime,
                                           dateTime: dateTime,
-                                        ),),),
+                                        ))),
                                     child: Container(
                                       height: width * 0.65,
                                       width: width,
@@ -471,11 +443,13 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
                                                         ),
                                                         SizedBox(width: width * 0.02),
                                                         Expanded(
-                                                          child: uid == userId1
+                                                          child: userId == userId1
                                                               ? Container(
                                                               height: width * 0.05,
                                                               width: width * 0.1,
-                                                              decoration: BoxDecoration(color: Color.fromRGBO(5, 25, 55, 1), borderRadius: BorderRadius.circular(10)),
+                                                              decoration: BoxDecoration(color: Color.fromRGBO(
+                                                                  7, 170, 186,
+                                                                  0.8549019607843137), borderRadius: BorderRadius.circular(10)),
                                                               child: Center(
                                                                 child: Text(
                                                                   "Mine",
@@ -560,7 +534,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
                           return const Center(child: CircularProgressIndicator(color: Colors.black));
                         }),
                   ),
-                  SizedBox(height: width * 0.1),
+                  SizedBox(height: width * 0.1),*/
                 ],
               ),
             ),
@@ -570,12 +544,13 @@ class _HotelHomeScreenState extends State<HotelHomeScreen> {
 }
 
 class CustomDrawer extends StatelessWidget {
-
-   CustomDrawer({
+  const CustomDrawer({
     Key? key,
-    required this.image, required this.name, required  this.email,
-  }) : super(key: key) {
-  }
+    required this.name,
+    required this.email,
+    required this.image,
+  }) : super(key: key);
+
   final String name;
   final String email;
   final String image;
@@ -594,8 +569,7 @@ class CustomDrawer extends StatelessWidget {
             height: 200,
             padding: EdgeInsets.only(top: 70, right: 16, left: 16, bottom: 8),
             decoration: const BoxDecoration(
-              color: Color.fromRGBO(
-                7, 170, 186, 0.8549019607843137)
+              color: Color.fromRGBO(203, 28, 122, 1.0),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -643,7 +617,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const HotelHomeScreen()));//EditProfileScreen
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const EditProfileScreen()));
                   },
                   child: Text(
                     "EDIT PROFILE",
@@ -673,7 +647,7 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const HotelHomeScreen()));//YourDonationScreen()
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const YourDonationScreen()));
             },
           ),
           ListTile(
@@ -694,11 +668,63 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const HotelHomeScreen())); //YourAcceptanceScree()
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const YourAcceptanceScreen()));
             },
           ),
+          ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      WidgetSpan(
+                        child: Icon(Icons.shield, size: 14),
+                      ),
+                      TextSpan(text: " Privacy Policy", style: TextStyle(color: Colors.black)),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.arrow_forward_ios)
+              ],
+            ),
+            onTap: () async {
+              const url = "https://www.envirocare.nz/privacy-policy";
 
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch https://www.envirocare.nz/privacy-policy}';
+              }
+            },
+          ),
+          ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      WidgetSpan(
+                        child: Icon(Icons.credit_card, size: 14),
+                      ),
+                      TextSpan(text: " Terms & Condition", style: TextStyle(color: Colors.black)),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.arrow_forward_ios)
+              ],
+            ),
+            onTap: () async {
+              const url = "https://www.envirocare.nz/terms";
 
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch https://www.envirocare.nz/terms}';
+              }
+            },
+          ),
           ListTile(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -715,10 +741,29 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
             onTap: () async {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => HotelHomeScreen())) ;//helpscreen()
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => HotelHomeScreen()));
             },
           ),
-
+          Divider(color: Colors.grey),
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 30, left: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                InkWell(
+                    onTap: () {
+                      launch("https://www.facebook.com/envirocare.nz/");
+                    },
+                    child: Image.asset("assets/ELIXIR_logo.png", height: 40, width: 40)),
+                const SizedBox(width: 20),
+                InkWell(
+                    onTap: () {
+                      launch("https://www.envirocare.nz");
+                    },
+                    child: Image.asset("assets/ELIXIR_logo1.png", height: 40, width: 40)),
+              ],
+            ),
+          ),
           Container(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -735,13 +780,11 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 style: ElevatedButton.styleFrom(
                   side: const BorderSide(
-                    width: 1,
-                    color: Color.fromRGBO(
-                        7, 170, 186, 0.8549019607843137),
+                    width: 1.0,
+                    color: Color.fromRGBO(5, 25, 55, 1),
                   ),
                   primary: Colors.white,
-                  onPrimary: const Color.fromRGBO(
-                      7, 170, 186, 0.8549019607843137),
+                  onPrimary: const Color.fromRGBO(5, 25, 55, 1),
                 ),
               ),
             ),
@@ -752,242 +795,244 @@ class CustomDrawer extends StatelessWidget {
   }
 }
 
-/*GridView async .builder(
-     physics: PageScrollPhysics(
-         parent: NeverScrollableScrollPhysics()),
-         scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-     semanticChildCount: 2,
-     itemCount: snapshot.data!.docs.length,
-    gridDelegate:
-         const SliverGridDelegateWithFixedCrossAxisCount(
-             childAspectRatio: 3 / 4,
-             crossAxisCount: 2),
-     itemBuilder: (context, index) {
-       String docId = snapshot.data!.docs[index].id;
-       String itemName =
-           snapshot.data!.docs[index]['itemName'];
-       String userId1 =
-           snapshot.data!.docs[index]['userId'];
-       String categories =
-           snapshot.data!.docs[index]['categories'];
-       String desc =
-           snapshot.data!.docs[index]['description'];
-       String mobileNumber = snapshot
-           .data!.docs[index]['mobileNumber'];
-       String disAppearTime = snapshot
-           .data!.docs[index]['disAppearTime'];
-       String address =
-           snapshot.data!.docs[index]['address'];
-       String donerName =
-           snapshot.data!.docs[index]['name'];
-       String landmark =
-           snapshot.data!.docs[index]['landmark'];
-       String productUrl =
-          snapshot.data!.docs[index]['productUrl'];
-       DateTime dateTime =
-          DateTime.parse(disAppearTime);
-       return
-      GestureDetector(
-         onTap: () => Navigator.of(context).push(
-             MaterialPageRoute(
-                 builder: (context) =>
-                     ProductDetailsScreen(
-                       latitude:
-                           _currentPosition.latitude,
-                       longitude: _currentPosition
-                           .longitude,
-                       myFood: userId == userId1
-                          ? true
-                           : false,
-                       donatedUserName: name,
-                       userId: userId1,
-                       categories: categories,
-                       decription: desc,
-                       mobileNumber: mobileNumber,
-                       productId: docId,
-                       address: address,
-                       landmark: landmark,
-                       donerName: donerName,
-                       productImage: productUrl,
-                       productName: itemName,
-                       time: disAppearTime,
-                       dateTime: dateTime,
-                     ))),
-        child: Container(
-           height: width * 0.65,
-           width: width,
-           margin: EdgeInsets.symmetric(
-               horizontal: width * 0.01,
-               vertical: width * 0.01),
-           decoration: BoxDecoration(
-               borderRadius:
-                  BorderRadius.circular(10),
-               border:
-                   Border.all(color: Colors.grey)),
-          child: Column(
-             crossAxisAlignment:
-                 CrossAxisAlignment.stretch,
-             children: [
-               Expanded(
-                  child: Container(
-                 decoration: BoxDecoration(
-                     borderRadius: BorderRadius.only(
-                         topLeft:
-                             Radius.circular(10),
-                         topRight:
-                            Radius.circular(10)),
-                    image: DecorationImage(
-                       image:
-                           NetworkImage(productUrl),
-                       fit: BoxFit.cover,
-                      isAntiAlias: true,
-                     )),
-                 child: null,
-              )),
-               Expanded(
-                   child: Container(
-                 padding: EdgeInsets.symmetric(
-                    horizontal: width * 0.02,
-                     vertical: width * 0.01),
-                 child: Column(
-                   crossAxisAlignment:
-                       CrossAxisAlignment.stretch,
-                   children: [
-                     Row(
-                       children: [
-                         Expanded(
-                           flex: 2,
-                           child: Text(
-                             itemName,
-                            style:
-                                 GoogleFonts.poppins(
-                                     fontWeight:
-                                         FontWeight
-                                             .w400,
-                                     fontSize:
-                                         width *
-                                             0.042,
-                                     color: Colors
-                                         .black),
-                           ),
-                         ),
-                         SizedBox(
-                             width: width * 0.02),
-                         Expanded(
-                          child: userId == userId1
-                              ? Container(
-                                   height:
-                                       width * 0.05,
-                                   width:
-                                      width * 0.1,
-                                  decoration: BoxDecoration(
-                                       color: Color
-                                           .fromRGBO(
-                                               5,
-                                              25,
-                                              55,
-                                               1),
-                                       borderRadius:
-                                           BorderRadius
-                                               .circular(
-                                                   10)),
-                                   child: Center(
-                                     child: Text(
-                                       "Mine",
-                                       style: GoogleFonts.poppins(
-                                           color: Colors
-                                               .white,
-                                           fontSize:
-                                               width *
-                                                   0.028),
-                                     ),
-                                   ))
-                               : SizedBox(
-                                   width: 0.0),
-                         ),
-                       ],
-                     ),
-                     Expanded(
-                       child: Text(
-                        categories,
-                         style: GoogleFonts.poppins(
-                             fontWeight:
-                                 FontWeight.w400,
-                             fontSize: width * 0.03,
-                             color: Colors.grey),
-                       ),
-                     ),
-                     // SizedBox(height: width * 0.02),
-                     Expanded(
-                      flex: 2,
-                       child: Row(
-                         crossAxisAlignment:
-                             CrossAxisAlignment
-                                 .start,
-                         children: [
-                           Text(
-                             "4.3 KM",
-                             style:
-                                 GoogleFonts.poppins(
-                                     fontWeight:
-                                         FontWeight
-                                             .w400,
-                                     fontSize:
-                                        width *
-                                             0.03,
-                                     color: Colors
-                                        .black),
-                           ),
-                           SizedBox(
-                               width: width * 0.03),
-                          Column(
-                             crossAxisAlignment:
-                                 CrossAxisAlignment
-                                     .start,
-                            mainAxisAlignment:
-                                 MainAxisAlignment
-                                    .start,
-                             children: [
-                               Text(
-                                 "Pickup Time:",
-                                 style: GoogleFonts.poppins(
-                                     fontWeight:
-                                         FontWeight
-                                             .w400,
-                                    fontSize:
-                                         width *
-                                             0.032,
-                                     color: Colors
-                                         .black),
-                               ),
-                               CountDownText(
-                                 due: dateTime,
-                                 finishedText:
-                                     "Expired",
-                                 showLabel: false,
-                                 longDateName: true,
-                                 style: GoogleFonts
-                                     .poppins(
-                                         fontWeight:
-                                             FontWeight
-                                                 .w400,
-                                         fontSize:
-                                            width *
-                                                 0.03,
-                                         color: Colors
-                                             .black),
-                               ),
-                             ],
-                           ),
-                        ],
-                       ),
-                    ),
-                  ],
-                 ),
-               )),
-             ],
-          ),
-         ),
-       );
-     })*/
+// GridView.builder(
+//     physics: PageScrollPhysics(
+//         parent: NeverScrollableScrollPhysics()),
+//     scrollDirection: Axis.vertical,
+//     shrinkWrap: true,
+//     semanticChildCount: 2,
+//     itemCount: snapshot.data!.docs.length,
+//     gridDelegate:
+//         const SliverGridDelegateWithFixedCrossAxisCount(
+//             childAspectRatio: 3 / 4,
+//             crossAxisCount: 2),
+//     itemBuilder: (context, index) {
+//       String docId = snapshot.data!.docs[index].id;
+
+//       String itemName =
+//           snapshot.data!.docs[index]['itemName'];
+//       String userId1 =
+//           snapshot.data!.docs[index]['userId'];
+//       String categories =
+//           snapshot.data!.docs[index]['categories'];
+//       String desc =
+//           snapshot.data!.docs[index]['description'];
+//       String mobileNumber = snapshot
+//           .data!.docs[index]['mobileNumber'];
+//       String disAppearTime = snapshot
+//           .data!.docs[index]['disAppearTime'];
+//       String address =
+//           snapshot.data!.docs[index]['address'];
+//       String donerName =
+//           snapshot.data!.docs[index]['name'];
+//       String landmark =
+//           snapshot.data!.docs[index]['landmark'];
+//       String productUrl =
+//           snapshot.data!.docs[index]['productUrl'];
+//       DateTime dateTime =
+//           DateTime.parse(disAppearTime);
+
+//       return
+// GestureDetector(
+//         onTap: () => Navigator.of(context).push(
+//             MaterialPageRoute(
+//                 builder: (context) =>
+//                     ProductDetailsScreen(
+//                       latitude:
+//                           _currentPosition.latitude,
+//                       longitude: _currentPosition
+//                           .longitude,
+//                       myFood: userId == userId1
+//                           ? true
+//                           : false,
+//                       donatedUserName: name,
+//                       userId: userId1,
+//                       categories: categories,
+//                       decription: desc,
+//                       mobileNumber: mobileNumber,
+//                       productId: docId,
+//                       address: address,
+//                       landmark: landmark,
+//                       donerName: donerName,
+//                       productImage: productUrl,
+//                       productName: itemName,
+//                       time: disAppearTime,
+//                       dateTime: dateTime,
+//                     ))),
+//         child: Container(
+//           height: width * 0.65,
+//           width: width,
+//           margin: EdgeInsets.symmetric(
+//               horizontal: width * 0.01,
+//               vertical: width * 0.01),
+//           decoration: BoxDecoration(
+//               borderRadius:
+//                   BorderRadius.circular(10),
+//               border:
+//                   Border.all(color: Colors.grey)),
+//           child: Column(
+//             crossAxisAlignment:
+//                 CrossAxisAlignment.stretch,
+//             children: [
+//               Expanded(
+//                   child: Container(
+//                 decoration: BoxDecoration(
+//                     borderRadius: BorderRadius.only(
+//                         topLeft:
+//                             Radius.circular(10),
+//                         topRight:
+//                             Radius.circular(10)),
+//                     image: DecorationImage(
+//                       image:
+//                           NetworkImage(productUrl),
+//                       fit: BoxFit.cover,
+//                       isAntiAlias: true,
+//                     )),
+//                 child: null,
+//               )),
+//               Expanded(
+//                   child: Container(
+//                 padding: EdgeInsets.symmetric(
+//                     horizontal: width * 0.02,
+//                     vertical: width * 0.01),
+//                 child: Column(
+//                   crossAxisAlignment:
+//                       CrossAxisAlignment.stretch,
+//                   children: [
+//                     Row(
+//                       children: [
+//                         Expanded(
+//                           flex: 2,
+//                           child: Text(
+//                             itemName,
+//                             style:
+//                                 GoogleFonts.poppins(
+//                                     fontWeight:
+//                                         FontWeight
+//                                             .w400,
+//                                     fontSize:
+//                                         width *
+//                                             0.042,
+//                                     color: Colors
+//                                         .black),
+//                           ),
+//                         ),
+//                         SizedBox(
+//                             width: width * 0.02),
+//                         Expanded(
+//                           child: userId == userId1
+//                               ? Container(
+//                                   height:
+//                                       width * 0.05,
+//                                   width:
+//                                       width * 0.1,
+//                                   decoration: BoxDecoration(
+//                                       color: Color
+//                                           .fromRGBO(
+//                                               5,
+//                                               25,
+//                                               55,
+//                                               1),
+//                                       borderRadius:
+//                                           BorderRadius
+//                                               .circular(
+//                                                   10)),
+//                                   child: Center(
+//                                     child: Text(
+//                                       "Mine",
+//                                       style: GoogleFonts.poppins(
+//                                           color: Colors
+//                                               .white,
+//                                           fontSize:
+//                                               width *
+//                                                   0.028),
+//                                     ),
+//                                   ))
+//                               : SizedBox(
+//                                   width: 0.0),
+//                         ),
+//                       ],
+//                     ),
+//                     Expanded(
+//                       child: Text(
+//                         categories,
+//                         style: GoogleFonts.poppins(
+//                             fontWeight:
+//                                 FontWeight.w400,
+//                             fontSize: width * 0.03,
+//                             color: Colors.grey),
+//                       ),
+//                     ),
+//                     // SizedBox(height: width * 0.02),
+//                     Expanded(
+//                       flex: 2,
+//                       child: Row(
+//                         crossAxisAlignment:
+//                             CrossAxisAlignment
+//                                 .start,
+//                         children: [
+//                           Text(
+//                             "4.3 KM",
+//                             style:
+//                                 GoogleFonts.poppins(
+//                                     fontWeight:
+//                                         FontWeight
+//                                             .w400,
+//                                     fontSize:
+//                                         width *
+//                                             0.03,
+//                                     color: Colors
+//                                         .black),
+//                           ),
+//                           SizedBox(
+//                               width: width * 0.03),
+//                           Column(
+//                             crossAxisAlignment:
+//                                 CrossAxisAlignment
+//                                     .start,
+//                             mainAxisAlignment:
+//                                 MainAxisAlignment
+//                                     .start,
+//                             children: [
+//                               Text(
+//                                 "Pickup Time:",
+//                                 style: GoogleFonts.poppins(
+//                                     fontWeight:
+//                                         FontWeight
+//                                             .w400,
+//                                     fontSize:
+//                                         width *
+//                                             0.032,
+//                                     color: Colors
+//                                         .black),
+//                               ),
+//                               CountDownText(
+//                                 due: dateTime,
+//                                 finishedText:
+//                                     "Expired",
+//                                 showLabel: false,
+//                                 longDateName: true,
+//                                 style: GoogleFonts
+//                                     .poppins(
+//                                         fontWeight:
+//                                             FontWeight
+//                                                 .w400,
+//                                         fontSize:
+//                                             width *
+//                                                 0.03,
+//                                         color: Colors
+//                                             .black),
+//                               ),
+//                             ],
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               )),
+//             ],
+//           ),
+//         ),
+//       );
+//     });
