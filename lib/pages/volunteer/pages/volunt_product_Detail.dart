@@ -18,9 +18,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'editproduct_screen.dart';
 
-class ProductDetailsScreen extends StatefulWidget {
+class VoProductDetailsScreen extends StatefulWidget {
   final String productImage;
   final String productName;
   final String time;
@@ -40,7 +39,7 @@ class ProductDetailsScreen extends StatefulWidget {
   final double longitude;
   final DateTime dateTime;
 
-  const ProductDetailsScreen(
+  const VoProductDetailsScreen(
       {Key? key,
         required this.productImage,
         required this.productName,
@@ -66,7 +65,7 @@ class ProductDetailsScreen extends StatefulWidget {
   _ProductDetailsScreenState createState() => _ProductDetailsScreenState();
 }
 
-class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+class _ProductDetailsScreenState extends State<VoProductDetailsScreen> {
   Completer<GoogleMapController> _controller = Completer();
   final double long = 0;
   final double lati = 0;
@@ -339,7 +338,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             // foreground
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
+                            /*Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => EditProductScreen(
                                   address: widget.address,
                                   categories: widget.categories,
@@ -350,7 +349,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   name: widget.productName,
                                   productImage: widget.productImage,
                                   time: widget.time,
-                                )));
+                                )));*/
                           },
                           child: isLoading == true
                               ? const CircularProgressIndicator(

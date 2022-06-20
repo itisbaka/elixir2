@@ -34,7 +34,7 @@ class _YourAcceptanceScreenState extends State<YourAcceptanceScreen> {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.cyan.shade700,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
@@ -44,7 +44,7 @@ class _YourAcceptanceScreenState extends State<YourAcceptanceScreen> {
           "YOUR ACCEPTANCE",
           style: TextStyle(color: Colors.black),
         ),
-        actions: [Padding(padding: const EdgeInsets.only(right: 8), child: Image.asset("assets/images/logo.png", height: 50, width: 50))],
+        actions: [Padding(padding: const EdgeInsets.only(right: 8), child: Image.asset("assets/ELIXIR_logo.png", height: 50, width: 50))],
       ),
       body: SingleChildScrollView(
         child: Container(

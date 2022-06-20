@@ -11,14 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+class VolunEditProfileScreen extends StatefulWidget {
+  const VolunEditProfileScreen({Key? key}) : super(key: key);
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfileScreenState extends State<VolunEditProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   String _profileUrl = "";
@@ -29,13 +29,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     String userdoc = user!.uid;
 
     FirebaseFirestore.instance
-        .collection("Users")
+        .collection("VolUsers")
         .doc(userdoc)
         .snapshots()
         .listen((event) {
       setState(() {
         _nameController.text = event.get("name").toString();
-
         _emailController.text = event.get("email").toString();
 
         _profileUrl = event.get("profileUrl").toString();
@@ -56,13 +55,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       StorageProvider(firebaseStorage: FirebaseStorage.instance);
       String imageUrl =
       await _storageProvider.uploadUserProfile(image: selectedFile);
-      await FirebaseFirestore.instance.collection("Users").doc(userdoc).set({
+      await FirebaseFirestore.instance.collection("VolUsers").doc(userdoc).set({
         "name": _nameController.text.trim(),
         "email": _emailController.text.trim(),
         "profileUrl": imageUrl,
       });
     } else {
-      await FirebaseFirestore.instance.collection("Users").doc(userdoc).set({
+      await FirebaseFirestore.instance.collection("VolUsers").doc(userdoc).set({
         "name": _nameController.text.trim(),
         "email": _emailController.text.trim(),
         "profileUrl": _profileUrl,

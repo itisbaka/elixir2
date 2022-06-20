@@ -5,6 +5,9 @@ import 'package:elixir2/pages/Hotel/place/auth_provider.dart';
 import 'package:elixir2/pages/Login/login_home.dart';
 import 'package:elixir2/pages/Hotel/Orders/product_model.dart';
 import 'package:elixir2/pages/payment/payment.dart';
+import 'package:elixir2/pages/volunteer/pages/Notification_screen.dart';
+import 'package:elixir2/pages/volunteer/pages/Voluneditprofile_screen.dart';
+import 'package:elixir2/pages/volunteer/pages/volunt_product_Detail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,22 +16,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:elixir2/pages/Hotel/Orders/product_model.dart';
 
-import 'Orders/add_order.dart';
-import 'Orders/productdetails_screen.dart';
-import 'Orders/youracceptance.dart';
-import 'Orders/yourdonation_screen.dart';
-import 'Orders/yournotifation_screen.dart';
-import 'editprofile_screen.dart';
 
-class HotelHomeScreen extends StatefulWidget {
-  const HotelHomeScreen({Key? key}) : super(key: key);
+class VolunteerHomeScreen extends StatefulWidget {
+  const  VolunteerHomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HotelHomeScreen> {
+class _HomeScreenState extends State< VolunteerHomeScreen> {
   Position _currentPosition = Position(latitude: 0.0, longitude: 0.0);
   late String _currentAddress = "";
   late String _currentAddress1 = "";
@@ -92,7 +90,7 @@ class _HomeScreenState extends State<HotelHomeScreen> {
     User? user = _firebaseAuth.currentUser;
     String userdoc = user!.uid;
 
-    FirebaseFirestore.instance.collection("Users").doc(userdoc).snapshots().listen((event) {
+    FirebaseFirestore.instance.collection("Volunt_Users").doc(userdoc).snapshots().listen((event) {
       setState(() {
         userId = event.id;
         name = event.get("name").toString();
@@ -113,26 +111,7 @@ class _HomeScreenState extends State<HotelHomeScreen> {
     await documentReferencer.delete().whenComplete(() => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Package is deleted.')))).catchError((e) => print(e));
   }
 
-/*StreamController<List<Product>> _streamController = StreamController<List<Product>>();
- Stream<List<Product>> get _stream => _streamController.stream;
- _filter(String searchQuery) {
-    final _mainCollection = FirebaseFirestore.instance
-         .collection('PRODUCTS').snapshots().toList();
-   List<Product> _filteredList = FirebaseFirestore.instance
-         .collection('PRODUCTS')
-       .where((Product product) => product.name.toLowerCase().contains(searchQuery.toLowerCase())).get()
-       .toList();
-   _streamController.sink.add(_filteredList);
- }*/
 
-// final List<Product> _dataFromQuerySnapShot = <Product>[
-//   // every user has same enviornment because you are applying
-//   // such filter on your query snapshot.
-//   // same is the reason why every one is approved user.
-//   _getProduct.
-//   User('Zain Emery', 'some_enviornment', true),
-
-// ];
 
   CollectionReference _collectionReference = FirebaseFirestore.instance.collection("PRODUCTS");
   TextEditingController _searchController = TextEditingController();
@@ -161,7 +140,7 @@ class _HomeScreenState extends State<HotelHomeScreen> {
                   ),
                 ),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const YourNotificationScreen()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationScreen()));
                 },
               )
             ],
@@ -183,31 +162,6 @@ class _HomeScreenState extends State<HotelHomeScreen> {
               padding: EdgeInsets.symmetric(horizontal: width * 0.04),
               child: Column(
                 children: [
-                  SizedBox(height: width * 0.04),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddProductScreen(latitude: _currentPosition != null ? _currentPosition.latitude : 0.0, longitude: _currentPosition != null ? _currentPosition.longitude : 0.0))),
-                    child: Container(
-                      height: width * 0.15,
-                      decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(5)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 16),
-                          Text(
-                            "I want to Donate",
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: width * 0.04, color: Colors.grey),
-                          ),
-                          Expanded(child: Container()),
-                          Container(
-                            decoration: BoxDecoration(color: blue, border: Border.all(color: blue), borderRadius: BorderRadius.only(topRight: Radius.circular(4), bottomRight: Radius.circular(4))),
-                            width: 50,
-                            height: double.infinity,
-                            child: const Icon(CupertinoIcons.plus, color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                   SizedBox(height: width * 0.04),
                   Container(
                     width: width,
@@ -316,26 +270,26 @@ class _HomeScreenState extends State<HotelHomeScreen> {
                                                           style: ButtonStyle(backgroundColor: MaterialStateProperty.all(blue)),
                                                           onPressed: () {
                                                             Navigator.of(context).push(MaterialPageRoute(
-                                                                builder: (context) => ProductDetailsScreen(
-                                                                      latitude: productLatitude,
-                                                                      longitude: productLongitude,
-                                                                      myFood: userId == userId1 ? true : false,
-                                                                      donatedUserName: name,
-                                                                      userId: userId1,
-                                                                      donatedUserCountry: location,
-                                                                      donatedUserEmail: email,
-                                                                      categories: categories,
-                                                                      decription: desc,
-                                                                      mobileNumber: mobileNumber,
-                                                                      productId: docId,
-                                                                      address: address,
-                                                                      landmark: landmark,
-                                                                      donerName: donerName,
-                                                                      productImage: productUrl,
-                                                                      productName: itemName,
-                                                                      time: disAppearTime,
-                                                                      dateTime: dateTime,
-                                                                    )));
+                                                                builder: (context) => VoProductDetailsScreen(
+                                                                  latitude: productLatitude,
+                                                                  longitude: productLongitude,
+                                                                  myFood: userId == userId1 ? true : false,
+                                                                  donatedUserName: name,
+                                                                  userId: userId1,
+                                                                  donatedUserCountry: location,
+                                                                  donatedUserEmail: email,
+                                                                  categories: categories,
+                                                                  decription: desc,
+                                                                  mobileNumber: mobileNumber,
+                                                                  productId: docId,
+                                                                  address: address,
+                                                                  landmark: landmark,
+                                                                  donerName: donerName,
+                                                                  productImage: productUrl,
+                                                                  productName: itemName,
+                                                                  time: disAppearTime,
+                                                                  dateTime: dateTime,
+                                                                )));
                                                           },
                                                           child: Text("See More", style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: width * 0.035, color: Colors.white))),
                                                     ),
@@ -354,7 +308,7 @@ class _HomeScreenState extends State<HotelHomeScreen> {
                         }),
                   ),
                   SizedBox(height: width * 0.04),
-                /*  Container(
+                  /*  Container(
                     width: width,
                     child: StreamBuilder<QuerySnapshot>(
                         stream: _getProduct().asBroadcastStream(),
@@ -619,7 +573,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const EditProfileScreen()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const VolunEditProfileScreen()));
                   },
                   child: Text(
                     "EDIT PROFILE",
@@ -641,27 +595,6 @@ class CustomDrawer extends StatelessWidget {
                       WidgetSpan(
                         child: Icon(Icons.contacts, size: 14),
                       ),
-                      TextSpan(text: " Your Donation", style: TextStyle(color: Colors.black)),
-                    ],
-                  ),
-                ),
-                const Icon(Icons.arrow_forward_ios)
-              ],
-            ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const YourDonationScreen()));
-            },
-          ),
-          ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      WidgetSpan(
-                        child: Icon(Icons.contacts, size: 14),
-                      ),
                       TextSpan(text: " Your Acceptance", style: TextStyle(color: Colors.black)),
                     ],
                   ),
@@ -670,7 +603,7 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const YourAcceptanceScreen()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const VolunteerHomeScreen()));
             },
           ),
           ListTile(
@@ -737,7 +670,7 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
             onTap: () async {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => HotelHomeScreen()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => VolunteerHomeScreen()));
             },
           ),
           Divider(color: Colors.grey),

@@ -285,7 +285,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        backgroundColor: Color.fromRGBO(5, 25, 55, 1),
+        backgroundColor: Color.fromRGBO(7, 170, 186, 0.8549019607843137),
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text(
@@ -300,7 +300,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             child: Stack(
               children: [
                 Container(
-                  color: const Color.fromRGBO(5, 25, 55, 1),
+                  color: const Color.fromRGBO(7, 170, 186, 0.8549019607843137),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(0, 30, 0, 30),
                     child: Center(
@@ -377,7 +377,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       EdgeInsets.only(right: width * 0.01),
                                       width: width * 0.1,
                                       decoration: const BoxDecoration(
-                                          color: Color.fromRGBO(5, 25, 55, 1),
+                                          color: Color.fromRGBO(
+                                              7, 170, 186, 0.8549019607843137),
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(5),
                                               bottomLeft: Radius.circular(5))),
@@ -440,7 +441,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       EdgeInsets.only(right: width * 0.01),
                                       width: width * 0.1,
                                       decoration: const BoxDecoration(
-                                          color: Color.fromRGBO(5, 25, 55, 1),
+                                          color: Color.fromRGBO(
+                                              7, 170, 186, 0.8549019607843137),
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(5),
                                               bottomLeft: Radius.circular(5))),
@@ -502,7 +504,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       EdgeInsets.only(right: width * 0.01),
                                       width: width * 0.1,
                                       decoration: const BoxDecoration(
-                                          color: Color.fromRGBO(5, 25, 55, 1),
+                                          color: Color.fromRGBO(
+                                              7, 170, 186, 0.8549019607843137),
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(5),
                                               bottomLeft: Radius.circular(5))),
@@ -564,7 +567,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       EdgeInsets.only(right: width * 0.01),
                                       width: width * 0.1,
                                       decoration: const BoxDecoration(
-                                          color: Color.fromRGBO(5, 25, 55, 1),
+                                          color: Color.fromRGBO(
+                                              7, 170, 186, 0.8549019607843137),
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(5),
                                               bottomLeft: Radius.circular(5))),
@@ -626,7 +630,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       EdgeInsets.only(right: width * 0.01),
                                       width: width * 0.1,
                                       decoration: const BoxDecoration(
-                                          color: Color.fromRGBO(5, 25, 55, 1),
+                                          color: Color.fromRGBO(
+                                              7, 170, 186, 0.8549019607843137),
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(5),
                                               bottomLeft: Radius.circular(5))),
@@ -738,7 +743,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             primary: const Color.fromRGBO(
-                                5, 25, 55, 1), // background
+                                7, 170, 186, 0.8549019607843137), // background
                             onPrimary: Colors.white,
                             minimumSize: Size(width, height * 0.06),
                             maximumSize: Size(width, height * 0.06),

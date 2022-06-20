@@ -41,7 +41,7 @@ class Donate extends State<Payment> {
       "description" : "Donation amount",
       "prefill" : {
         "contact" : "9176366054",
-        "email" : "foodiedesu@gmail.com"
+        "email" : "shawarma@gmail.com"
       },
       "external" : {
         "wallets" : ["paytm"]
